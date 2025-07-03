@@ -1,0 +1,143 @@
+:root {
+    --programming-bg: #1d2b53;
+    --programming-fg: #f5f5f5;
+    --programming-accent: #29adff;
+    --programming-accent-secondary: #5d679d;
+    --candle-color: #f0e6d6;
+    --flame-color: #ffaa00;
+
+    --coffee-bg: #e6dac8;
+    --coffee-fg: #5a3a2e;
+    --coffee-accent: #c47d57;
+    --coffee-accent-secondary: #b5a291;
+}
+
+body {
+    margin: 0;
+    /* Changed font for titles */
+    font-family: 'Roboto Mono', monospace;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    transition: background-color 0.5s, color 0.5s;
+    overflow: hidden; /* Prevents scrollbars from panel transitions */
+}
+
+/* --- THEMES --- */
+.programming-theme {
+    background-color: var(--programming-bg);
+    color: var(--programming-fg);
+}
+.coffee-theme {
+    background-color: var(--coffee-bg);
+    color: var(--coffee-fg);
+}
+
+.pomodoro-container {
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 450px;
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+/* --- NEW: Candle Styles & Animations --- */
+#candle-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 20px;
+    height: 120px;
+    margin-bottom: 20px;
+}
+.candle {
+    width: 50px;
+    height: 150px;
+    transition: opacity 0.5s;
+}
+.candle.extinguished {
+    opacity: 0.3;
+}
+.candle-body {
+    fill: var(--candle-color);
+    transform-origin: bottom;
+    transition: transform 0.3s; /* Smooth reset */
+}
+.wick {
+    stroke: #333;
+    stroke-width: 2px;
+}
+.flame {
+    fill: var(--flame-color);
+    transform-origin: 50% 100%; /* Base of flame */
+    opacity: 0; /* Hidden by default */
+    transition: opacity 0.3s;
+}
+
+.candle.burning .flame {
+    animation: flicker 1.5s infinite alternate;
+    opacity: 1;
+}
+.candle.burning .candle-body {
+    animation-name: burnDown;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+}
+@keyframes flicker {
+    0%, 100% { transform: scale(1, 1); }
+    50% { transform: scale(1.1, 0.9) translateX(1px); }
+}
+@keyframes burnDown {
+    from { transform: scaleY(1); }
+    to { transform: scaleY(0.05); }
+}
+/* Pause/Play Animation state will be controlled by JS */
+.burning { animation-play-state: paused; }
+
+/* --- End Candle Styles --- */
+
+#mode-title {
+    font-family: 'Lora', serif;
+    font-size: 2.8rem;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+#timer-display {
+    font-size: 6rem;
+    font-weight: 700;
+    margin-bottom: 25px;
+    line-height: 1;
+}
+
+/* All other styles (controls, buttons, cycle container) remain mostly the same */
+.controls { display: flex; justify-content: center; gap: 20px; }
+.btn { font-family: 'Roboto Mono', monospace; font-size: 1.2rem; padding: 12px 28px; border-radius: 8px; border: 2px solid; background-color: transparent; cursor: pointer; transition: all 0.2s ease-in-out; }
+.programming-theme .btn { color: var(--programming-fg); border-color: var(--programming-accent); }
+.programming-theme .btn:hover { background-color: var(--programming-accent); color: var(--programming-bg); }
+.programming-theme .btn.btn-secondary { border-color: var(--programming-accent-secondary); }
+.programming-theme .btn.btn-secondary:hover { background-color: var(--programming-accent-secondary); }
+.coffee-theme .btn { color: var(--coffee-fg); border-color: var(--coffee-accent); }
+.coffee-theme .btn:hover { background-color: var(--coffee-accent); color: var(--coffee-bg); }
+.coffee-theme .btn.btn-secondary { border-color: var(--coffee-accent-secondary); }
+.coffee-theme .btn.btn-secondary:hover { background-color: var(--coffee-accent-secondary); }
+#cycle-container { margin-top: 25px; font-size: 1.1rem; opacity: 0.8; }
+#settings-btn { position: absolute; top: 20px; right: 20px; font-size: 1.5rem; background: rgba(255, 255, 255, 0.2); border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: transform 0.2s; }
+#settings-btn:hover { transform: rotate(45deg); }
+
+/* Settings Panel Updates */
+.hidden { display: none !important; }
+.settings-panel { position: absolute; width: 90%; max-width: 450px; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); z-index: 100; transition: opacity 0.3s, transform 0.3s; }
+.programming-theme .settings-panel { background-color: var(--programming-bg); }
+.coffee-theme .settings-panel { background-color: var(--coffee-bg); }
+.settings-panel h2 { margin-top: 0; margin-bottom: 20px; text-align: center; }
+.setting { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-size: 1rem; }
+.setting label { flex-basis: 60%; }
+.setting input { width: 120px; padding: 8px; font-size: 1rem; border-radius: 5px; border: 1px solid; font-family: 'Roboto Mono', monospace; }
+.programming-theme .setting input { background: var(--programming-bg); color: var(--programming-fg); border-color: var(--programming-accent-secondary); }
+.coffee-theme .setting input { background: var(--coffee-bg); color: var(--coffee-fg); border-color: var(--coffee-accent-secondary); }
+.divider { width: 100%; border: none; height: 1px; background-color: rgba(128, 128, 128, 0.3); margin: 25px 0; }
+.settings-controls { display: flex; justify-content: center; gap: 15px; margin-top: 25px; }
